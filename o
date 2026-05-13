@@ -800,53 +800,95 @@ do -- Functions
                             end
                         end
 
-                        if BoxType == "2D" then
-                            BoxOutline.Parent.Visible = true
-                            BoxOutline.Parent.Size = UDim2_fromOffset(BoxWidth, BoxHeight)
-                            BoxInline.Parent.Visible = true
-                            BoxInline.Parent.Size = UDim2_fromOffset(BoxWidth + 2, BoxHeight + 2)
+if BoxType == "2D" then
+    -- show normal box
+    BoxOutline.Parent.Visible = true
+    BoxOutline.Parent.Size = UDim2_fromOffset(BoxWidth, BoxHeight)
 
-                            local BoxInlineGradient, BoxOutlineGradient = Objects["BoxInlineGradient"], Objects["BoxOutlineGradient"]; do
-                                BoxInlineGradient.Color = ColorSequence_new{ColorSequenceKeypoint_new(0, BoxColor[1]), ColorSequenceKeypoint_new(1, BoxColor[2])}
-                                BoxInlineGradient.Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, BoxTransparency[1]), NumberSequenceKeypoint_new(1, BoxTransparency[2])}
-                                BoxInlineGradient.Rotation = BoxRotation
+    BoxInline.Parent.Visible = true
+    BoxInline.Parent.Size = UDim2_fromOffset(BoxWidth + 2, BoxHeight + 2)
 
-                                BoxOutlineGradient.Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, BoxTransparency[1]), NumberSequenceKeypoint_new(1, BoxTransparency[2])}
-                                BoxOutlineGradient.Rotation = BoxRotation
-                            end
+    -- hide corner box
+    Objects["CornerHolder"].Visible = false
 
-                            local BoxFillGradient = Objects["BoxFillGradient"]; do
-                                local BoxFillColor, BoxFillTransparency, BoxFillRotation = ESPSettings.BoundingBox.Fill.Color, ESPSettings.BoundingBox.Fill.Transparency, ESPSettings.BoundingBox.Fill.Rotation
+    for i = 1, 8 do
+        Objects["Line_" .. i].Visible = false
+    end
 
-                                BoxFill.Visible = ESPSettings.BoundingBox.Fill.Enabled
-                                BoxFill.Size = UDim2_fromOffset(BoxWidth, BoxHeight)
-                                BoxFillGradient.Rotation = BoxFillRotation
-                                BoxFillGradient.Color = ColorSequence_new{ColorSequenceKeypoint_new(0, BoxFillColor[1]), ColorSequenceKeypoint_new(1, BoxFillColor[2])}
-                                BoxFillGradient.Transparency = NumberSequence_new{NumberSequenceKeypoint_new(0, BoxFillTransparency[1]), NumberSequenceKeypoint_new(1, BoxFillTransparency[2])}
-                            end
-                        else
-                            local CornerHolder = Objects["CornerHolder"]; do
-                                CornerHolder.Visible = true
-                                CornerHolder.Size = UDim2_fromOffset(BoxWidth + 2, BoxHeight + 2)
-                            end
+    local BoxInlineGradient, BoxOutlineGradient = Objects["BoxInlineGradient"], Objects["BoxOutlineGradient"]; do
+        BoxInlineGradient.Color = ColorSequence_new{
+            ColorSequenceKeypoint_new(0, BoxColor[1]),
+            ColorSequenceKeypoint_new(1, BoxColor[2])
+        }
 
-                            for i = 1, 8 do
-                                local Line = Objects["Line_" .. i]
-                                local Stroke = Line.UIStroke
-                                local LayoutPosition = Layout[i]
-                                local Position, Size, AnchorPoint, Rotation = LayoutPosition[1], LayoutPosition[2], LayoutPosition[3], LayoutPosition[4]
+        BoxInlineGradient.Transparency = NumberSequence_new{
+            NumberSequenceKeypoint_new(0, BoxTransparency[1]),
+            NumberSequenceKeypoint_new(1, BoxTransparency[2])
+        }
 
-                                Stroke.Transparency = BoxTransparency[1]
+        BoxInlineGradient.Rotation = BoxRotation
 
-                                Line.Position = Position
-                                Line.Rotation = Rotation
-                                Line.BackgroundColor3 = BoxColor[1]
-                                Line.BackgroundTransparency = BoxTransparency[1]
-                                Line.Size = Size
-                                Line.AnchorPoint = AnchorPoint
-                                Line.Visible = true
-                            end
-                        end
+        BoxOutlineGradient.Transparency = NumberSequence_new{
+            NumberSequenceKeypoint_new(0, BoxTransparency[1]),
+            NumberSequenceKeypoint_new(1, BoxTransparency[2])
+        }
+
+        BoxOutlineGradient.Rotation = BoxRotation
+    end
+
+    local BoxFillGradient = Objects["BoxFillGradient"]; do
+        local BoxFillColor = ESPSettings.BoundingBox.Fill.Color
+        local BoxFillTransparency = ESPSettings.BoundingBox.Fill.Transparency
+        local BoxFillRotation = ESPSettings.BoundingBox.Fill.Rotation
+
+        BoxFill.Visible = ESPSettings.BoundingBox.Fill.Enabled
+        BoxFill.Size = UDim2_fromOffset(BoxWidth, BoxHeight)
+
+        BoxFillGradient.Rotation = BoxFillRotation
+        BoxFillGradient.Color = ColorSequence_new{
+            ColorSequenceKeypoint_new(0, BoxFillColor[1]),
+            ColorSequenceKeypoint_new(1, BoxFillColor[2])
+        }
+
+        BoxFillGradient.Transparency = NumberSequence_new{
+            NumberSequenceKeypoint_new(0, BoxFillTransparency[1]),
+            NumberSequenceKeypoint_new(1, BoxFillTransparency[2])
+        }
+    end
+else
+    -- hide normal box
+    BoxOutline.Parent.Visible = false
+    BoxInline.Parent.Visible = false
+    BoxFill.Visible = false
+
+    -- show corner box
+    local CornerHolder = Objects["CornerHolder"]; do
+        CornerHolder.Visible = true
+        CornerHolder.Size = UDim2_fromOffset(BoxWidth + 2, BoxHeight + 2)
+    end
+
+    for i = 1, 8 do
+        local Line = Objects["Line_" .. i]
+        local Stroke = Line.UIStroke
+        local LayoutPosition = Layout[i]
+
+        local Position = LayoutPosition[1]
+        local Size = LayoutPosition[2]
+        local AnchorPoint = LayoutPosition[3]
+        local Rotation = LayoutPosition[4]
+
+        Stroke.Transparency = BoxTransparency[1]
+
+        Line.Position = Position
+        Line.Rotation = Rotation
+        Line.BackgroundColor3 = BoxColor[1]
+        Line.BackgroundTransparency = BoxTransparency[1]
+        Line.Size = Size
+        Line.AnchorPoint = AnchorPoint
+        Line.Visible = true
+    end
+end
+
                     else
                         BoxGlow.ImageTransparency = 1
                         BoxOutline.Parent.Visible = false
