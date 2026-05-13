@@ -38,7 +38,7 @@ getgenv().ESP = {
             LocalPlayer = false,
 
             Font = "Minecraftia",
-            FontSize = 6,
+            FontSize = 7,
             FontType = "lowercase",
 
             MaxDistance = 300,
@@ -512,102 +512,39 @@ do -- Functions
                 if #Objects > 0 then return end
 
                 if IsPlayer then
+                    TargetInfo.CharacterConnection = Utility.AddConnection(Target.CharacterAdded, function(Character)
+                        CharacterObjects.Character = Character
+                        CharacterObjects.HumanoidRootPart = WaitForChild(Character, "HumanoidRootPart", 10)
+                        CharacterObjects.Humanoid = WaitForChild(Character, "Humanoid", 10)
+                        CharacterObjects.Children = PlayerHelper.GetChildren(Character)
+                        CharacterObjects.Descendants = PlayerHelper.GetDescendants(Character)
 
-TargetInfo.CharacterConnection = Utility.AddConnection(Target.CharacterAdded, function(Character)
-    CharacterObjects.Character = Character
-    CharacterObjects.HumanoidRootPart = WaitForChild(Character, "HumanoidRootPart", 10)
-    CharacterObjects.Humanoid = WaitForChild(Character, "Humanoid", 10)
-    CharacterObjects.Children = PlayerHelper.GetChildren(Character)
-    CharacterObjects.Descendants = PlayerHelper.GetDescendants(Character)
+                        local Highlight = Objects["Highlight"]; do
+                            Highlight.Adornee = CharacterObjects.Character
+                        end
+                    end)
 
-    local Highlight = Objects["Highlight"]
+                    if CharacterObjects.Character then
+                        ToolConnection.Added = Utility.AddConnection(CharacterObjects.Character.ChildAdded, function(Child)
+                            if IsA(Child, "Tool") then 
+                                TargetInfo.CurrentTool = Child.Name
+                            end 
+                        end)
+                        
+                        ToolConnection.Removed = Utility.AddConnection(CharacterObjects.Character.ChildRemoved, function(Child)
+                            if IsA(Child, "Tool") then 
+                                TargetInfo.CurrentTool = "none"
+                            end 
+                        end)
+                    end
+                end
 
-    if Highlight then
-        Highlight.Parent = ESPHolder
-        Highlight.Adornee = Character
-        Highlight.Enabled = ESPSettings.Chams.Enabled
-    end
-
-    if CharacterObjects.Character then
-        ToolConnection.Added = Utility.AddConnection(CharacterObjects.Character.ChildAdded, function(Child)
-            if IsA(Child, "Tool") then
-                TargetInfo.CurrentTool = Child.Name
-            end
-        end)
-
-        ToolConnection.Removed = Utility.AddConnection(CharacterObjects.Character.ChildRemoved, function(Child)
-            if IsA(Child, "Tool") then
-                TargetInfo.CurrentTool = "none"
-            end
-        end)
-    end
-end)
-
-Objects["Highlight"] = Utility.CreateObject("Highlight", {
-    Parent = ESPHolder,
-    Adornee = CharacterObjects.Character
-})
-
-Objects["TargetHolder"] = Utility.CreateObject("Frame", {
-    Parent = ESPHolder,
-    Visible = true,
-    BackgroundTransparency = 1,
-    Position = UDim2_new(0, 0, 0, 0),
-    BorderColor3 = Color3_fromRGB(0, 0, 0),
-    Size = UDim2_new(0, 0, 0, 0),
-    BorderSizePixel = 0,
-    BackgroundColor3 = Color3_fromRGB(255, 255, 255)
-})
-
-Objects["TopHolder"] = Utility.CreateObject("Frame", {
-    Parent = Objects["TargetHolder"],
-    AutomaticSize = Enum.AutomaticSize.Y,
-    Visible = true,
-    BackgroundTransparency = 1,
-    AnchorPoint = Vector2_new(0, 1),
-    Position = UDim2_new(0, -2, 0, -5),
-    BorderColor3 = Color3_fromRGB(0, 0, 0),
-    Size = UDim2_new(1, 4, 0, 0),
-    BorderSizePixel = 0,
-    BackgroundColor3 = Color3_fromRGB(255, 255, 255)
-})
-
-Objects["BottomHolder"] = Utility.CreateObject("Frame", {
-    Parent = Objects["TargetHolder"],
-    AutomaticSize = Enum.AutomaticSize.Y,
-    Visible = true,
-    BackgroundTransparency = 1,
-    Position = UDim2_new(0, -2, 1, 3),
-    BorderColor3 = Color3_fromRGB(0, 0, 0),
-    Size = UDim2_new(1, 4, 0, 0),
-    BorderSizePixel = 0,
-    BackgroundColor3 = Color3_fromRGB(255, 255, 255)
-})
-
-Objects["LeftHolder"] = Utility.CreateObject("Frame", {
-    Parent = Objects["TargetHolder"],
-    AutomaticSize = Enum.AutomaticSize.X,
-    Visible = true,
-    BackgroundTransparency = 1,
-    AnchorPoint = Vector2_new(1, 0),
-    Position = UDim2_new(0, -4, 0, -2),
-    BorderColor3 = Color3_fromRGB(0, 0, 0),
-    Size = UDim2_new(0, 0, 1, 4),
-    BorderSizePixel = 0,
-    BackgroundColor3 = Color3_fromRGB(255, 255, 255)
-})
-
-Objects["RightHolder"] = Utility.CreateObject("Frame", {
-    Parent = Objects["TargetHolder"],
-    AutomaticSize = Enum.AutomaticSize.X,
-    Visible = true,
-    BackgroundTransparency = 1,
-    Position = UDim2_new(1, 8, 0, -2),
-    BorderColor3 = Color3_fromRGB(0, 0, 0),
-    Size = UDim2_new(0, 0, 1, 4),
-    BorderSizePixel = 0,
-    BackgroundColor3 = Color3_fromRGB(255, 255, 255)
-})
+                Objects["Highlight"] = Utility.CreateObject("Highlight", {Parent = CharacterObjects.Character, Adornee = CharacterObjects.Character})
+                Objects["TargetHolder"] = Utility.CreateObject("Frame", {Parent = ESPHolder, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
+                Objects["TopHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, AnchorPoint = Vector2_new(0, 1), Position = UDim2_new(0, -2, 0, -5), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 4, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
+                Objects["BottomHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, -2, 1, 3), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 4, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
+                Objects["LeftHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.X, Visible = true, BackgroundTransparency = 1, AnchorPoint = Vector2_new(1, 0), Position = UDim2_new(0, -4, 0, -2), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 1, 4), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
+                Objects["RightHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.X, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(1, 8, 0, -2), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 1, 4), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
                 
                 do -- Text Holders
                     Objects["TopTextHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TopHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 0, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
