@@ -38,7 +38,7 @@ getgenv().ESP = {
             LocalPlayer = false,
 
             Font = "Minecraftia",
-            FontSize = 7,
+            FontSize = 6,
             FontType = "lowercase",
 
             MaxDistance = 300,
