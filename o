@@ -512,34 +512,36 @@ do -- Functions
                 if #Objects > 0 then return end
 
                 if IsPlayer then
-                    TargetInfo.CharacterConnection = Utility.AddConnection(Target.CharacterAdded, function(Character)
-                        CharacterObjects.Character = Character
-                        CharacterObjects.HumanoidRootPart = WaitForChild(Character, "HumanoidRootPart", 10)
-                        CharacterObjects.Humanoid = WaitForChild(Character, "Humanoid", 10)
-                        CharacterObjects.Children = PlayerHelper.GetChildren(Character)
-                        CharacterObjects.Descendants = PlayerHelper.GetDescendants(Character)
 
-local Highlight = Objects["Highlight"]
+TargetInfo.CharacterConnection = Utility.AddConnection(Target.CharacterAdded, function(Character)
+    CharacterObjects.Character = Character
+    CharacterObjects.HumanoidRootPart = WaitForChild(Character, "HumanoidRootPart", 10)
+    CharacterObjects.Humanoid = WaitForChild(Character, "Humanoid", 10)
+    CharacterObjects.Children = PlayerHelper.GetChildren(Character)
+    CharacterObjects.Descendants = PlayerHelper.GetDescendants(Character)
 
-if Highlight then
-    Highlight.Parent = CharacterObjects.Character
-    Highlight.Adornee = CharacterObjects.Character
-end
+    local Highlight = Objects["Highlight"]
 
-                    if CharacterObjects.Character then
-                        ToolConnection.Added = Utility.AddConnection(CharacterObjects.Character.ChildAdded, function(Child)
-                            if IsA(Child, "Tool") then 
-                                TargetInfo.CurrentTool = Child.Name
-                            end 
-                        end)
-                        
-                        ToolConnection.Removed = Utility.AddConnection(CharacterObjects.Character.ChildRemoved, function(Child)
-                            if IsA(Child, "Tool") then 
-                                TargetInfo.CurrentTool = "none"
-                            end 
-                        end)
-                    end
-                end
+    if Highlight then
+        Highlight.Parent = ESPHolder
+        Highlight.Adornee = Character
+        Highlight.Enabled = ESPSettings.Chams.Enabled
+    end
+
+    if CharacterObjects.Character then
+        ToolConnection.Added = Utility.AddConnection(CharacterObjects.Character.ChildAdded, function(Child)
+            if IsA(Child, "Tool") then
+                TargetInfo.CurrentTool = Child.Name
+            end
+        end)
+
+        ToolConnection.Removed = Utility.AddConnection(CharacterObjects.Character.ChildRemoved, function(Child)
+            if IsA(Child, "Tool") then
+                TargetInfo.CurrentTool = "none"
+            end
+        end)
+    end
+end)
 
 Objects["Highlight"] = Utility.CreateObject("Highlight", {
     Parent = ESPHolder,
