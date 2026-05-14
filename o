@@ -519,11 +519,8 @@ do -- Functions
                         CharacterObjects.Children = PlayerHelper.GetChildren(Character)
                         CharacterObjects.Descendants = PlayerHelper.GetDescendants(Character)
 
-                        -- Fixed Highlight for respawn
-                        local Highlight = Objects["Highlight"]
-                        if Highlight then
-                            Highlight.Adornee = Character
-                            Highlight.Parent = ESP.Holder
+                        local Highlight = Objects["Highlight"]; do
+                            Highlight.Adornee = CharacterObjects.Character
                         end
                     end)
 
@@ -542,12 +539,7 @@ do -- Functions
                     end
                 end
 
-Objects["Highlight"] = Utility.CreateObject("Highlight", {
-    Parent = ESP.Holder,           -- Changed this
-    Adornee = CharacterObjects.Character,
-    Enabled = false
-})
-
+                Objects["Highlight"] = Utility.CreateObject("Highlight", {Parent = CharacterObjects.Character, Adornee = CharacterObjects.Character})
                 Objects["TargetHolder"] = Utility.CreateObject("Frame", {Parent = ESPHolder, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, 0, 0, 0), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(0, 0, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
                 Objects["TopHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, AnchorPoint = Vector2_new(0, 1), Position = UDim2_new(0, -2, 0, -5), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 4, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
                 Objects["BottomHolder"] = Utility.CreateObject("Frame", {Parent = Objects["TargetHolder"], AutomaticSize = Enum.AutomaticSize.Y, Visible = true, BackgroundTransparency = 1, Position = UDim2_new(0, -2, 1, 3), BorderColor3 = Color3_fromRGB(0, 0, 0), Size = UDim2_new(1, 4, 0, 0), BorderSizePixel = 0, BackgroundColor3 = Color3_fromRGB(255, 255, 255)})
@@ -728,31 +720,28 @@ Objects["Highlight"] = Utility.CreateObject("Highlight", {
 
                 if #CharacterObjects.Children ~= #CurrentChildren then
                     CharacterObjects.Children = CurrentChildren
+
                     return
                 end
 
                 if #CharacterObjects.Descendants ~= #CurrentDescendants then
                     CharacterObjects.Descendants = CurrentDescendants
+
                     return
                 end
 
                 LastTick = os_clock()
                 Objects["TargetHolder"].Visible = false
-
-                -- Improved Highlight handling (prevents issues on respawn)
-                local Highlight = Objects["Highlight"]
-                if Highlight then
-                    Highlight.Enabled = false
-                end
+                Objects["Highlight"].Enabled = false
 
                 if (not ESPSettings.LocalPlayer) and Target == Client then return end
                 if not CharacterObjects.Character then return end
-
                 if IsPlayer then
                     if not CharacterObjects.HumanoidRootPart then
                         if CharacterObjects.Character then
                             CharacterObjects.HumanoidRootPart = FindFirstChild(CharacterObjects.Character, "HumanoidRootPart")
                         end
+
                         return
                     end
                     
@@ -760,6 +749,7 @@ Objects["Highlight"] = Utility.CreateObject("Highlight", {
                         if CharacterObjects.Character then
                             CharacterObjects.Humanoid = FindFirstChildWhichIsA(CharacterObjects.Character, "Humanoid")
                         end
+
                         return
                     end
                 else
@@ -769,6 +759,7 @@ Objects["Highlight"] = Utility.CreateObject("Highlight", {
                         elseif CharacterObjects.Character and CharacterObjects.Character.PrimaryPart then
                             CharacterObjects.HumanoidRootPart = CharacterObjects.Character.PrimaryPart
                         end
+
                         return
                     end
                 end
