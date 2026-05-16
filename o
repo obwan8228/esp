@@ -36,7 +36,7 @@ getgenv().ESP = {
         Players = {
             Enabled = false,
             LocalPlayer = false,
-
+            TeamCheck = true,
             Font = "Minecraftia",
             FontSize = 7,
             FontType = "lowercase",
@@ -730,12 +730,18 @@ do -- Functions
                     return
                 end
 
-                LastTick = os_clock()
-                Objects["TargetHolder"].Visible = false
-                Objects["Highlight"].Enabled = false
+LastTick = os_clock()
+Objects["TargetHolder"].Visible = false
+Objects["Highlight"].Enabled = false
 
-                if (not ESPSettings.LocalPlayer) and Target == Client then return end
-                if not CharacterObjects.Character then return end
+if (not ESPSettings.LocalPlayer) and Target == Client then return end
+if not CharacterObjects.Character then return end
+
+-- TEAM CHECK (Hide teammates)
+if ESPSettings.TeamCheck and Target.Team and Client.Team and Target.Team == Client.Team then
+    return
+end
+
                 if IsPlayer then
                     if not CharacterObjects.HumanoidRootPart then
                         if CharacterObjects.Character then
