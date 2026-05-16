@@ -737,10 +737,17 @@ Objects["Highlight"].Enabled = false
 if (not ESPSettings.LocalPlayer) and Target == Client then return end
 if not CharacterObjects.Character then return end
 
--- TEAM CHECK (Hide teammates)
-if ESPSettings.TeamCheck and Target.Team and Client.Team and Target.Team == Client.Team then
-    return
+-- ==================== FIXED TEAM CHECK ====================
+if ESPSettings.TeamCheck then
+    -- Only check teams if both players actually have a team
+    if Target.Team and Client.Team then
+        if Target.Team == Client.Team then
+            return  -- Same team → hide
+        end
+    end
+    -- If no teams exist in the game, show everyone
 end
+-- =======================================================
 
                 if IsPlayer then
                     if not CharacterObjects.HumanoidRootPart then
