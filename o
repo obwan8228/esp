@@ -987,10 +987,14 @@ end
                         if BarTextEnabled and IsPlayer then
                             local TextValue, TextVisible = BarInfo.Text.Type(Target, CharacterObjects)
 
-                            BarText.Text = `{tostring(math_floor(TextValue))}{BarInfo.Text.Ending}`
-                            BarText.TextColor3 = BarTextColor
-                            BarText.TextTransparency = BarTextTransparency
-                            BarText.UIStroke.Transparency = BarTextTransparency
+        BarText.Text = `{tostring(math_floor(TextValue))}{BarInfo.Text.Ending}`
+BarText.TextColor3 = BarTextColor
+BarText.TextTransparency = BarTextTransparency
+
+local Stroke = BarText:FindFirstChildOfClass("UIStroke")
+if Stroke then
+    Stroke.Transparency = BarTextTransparency
+end
 
                             if BarInfo.Text.FollowBar then
                                 BarText.Visible = TextVisible
