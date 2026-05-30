@@ -53,7 +53,7 @@ getgenv().ESP = {
                 Rotation = 90,
                 Color = {
                     Color3_fromRGB(255, 255, 255),   -- White on top
-                    Color3_fromRGB(90, 108, 198)     -- Accent on bottom
+                    Color3_fromRGB(47, 78, 124)     -- Accent on bottom
                 },
                 Transparency = {0, 0},
 
@@ -61,8 +61,8 @@ getgenv().ESP = {
                     Enabled = true,
                     Rotation = 90,
                     Color = {
-                        Color3_fromRGB(90, 108, 198), 
-                        Color3_fromRGB(90, 108, 198)
+                        Color3_fromRGB(47, 78, 124), 
+                        Color3_fromRGB(47, 78, 124)
                     },
                     Transparency = {0.75, 0.75},
                 },
@@ -71,7 +71,7 @@ getgenv().ESP = {
                     Enabled = true,
                     Rotation = 90,
                     Color = {
-                        Color3_fromRGB(90, 108, 198), 
+                        Color3_fromRGB(47, 78, 124), 
                         Color3_fromRGB(0, 0, 0)
                     },
                     Transparency = {0.6, 0.6},
@@ -83,7 +83,7 @@ getgenv().ESP = {
                     Enabled = false,
                     Position = "Left",
                     Color = {
-                        Color3_fromRGB(90, 108, 198),   -- High Health (Top of bar)
+                        Color3_fromRGB(47, 78, 124),   -- High Health (Top of bar)
                         Color3_fromRGB(90, 108, 198),   -- Medium Health
                         Color3_fromRGB(0, 0, 0)         -- Low Health (Bottom of bar)
                     },
